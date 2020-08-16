@@ -1,0 +1,36 @@
+body {
+  font-family: "Helvetica", sans-serif;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  margin: auto;
+  max-width: 991px;
+}
+
+#chart {
+  cursor: pointer;
+  text-align: center;
+}
+
+#svg {
+  margin: 50px;
+}
+
+#tooltip {
+  background: #eee;
+  border-radius: 2px;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  padding: 10px 20px;
+  position: absolute;
+  text-align: center;
+}
+
+#legend {
+  font-size: 14px;
+  width: 100%;
+}
