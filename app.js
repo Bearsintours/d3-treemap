@@ -6,9 +6,6 @@ const moviesData = localStorage.getItem("movies-data")
       return data;
     });
 
-const width = 1000;
-const height = 600;
-
 const colorMap = [
   {
     category: "Action",
@@ -41,14 +38,18 @@ const colorMap = [
 ];
 
 // svg
-const svg = d3.select("#chart").append("svg").attr("viewBox", `0 0 1000 600`).attr("id", "svg");
+const svg = d3.select("#chart").append("svg").attr("viewBox", `0 0 1200 700`).attr("id", "svg");
 
 // tooltip
 const toolTip = d3.select("body").append("div").attr("id", "tooltip");
 
+const toolTipMovie = d3.select("#tooltip").append("div").attr("id", "movie");
+const toolTipCategory = d3.select("#tooltip").append("div").attr("id", "category");
+const toolTipGross = d3.select("#tooltip").append("div").attr("id", "gross");
+
 // tree map
 const root = d3.hierarchy(moviesData).sum((d) => d.value);
-d3.treemap().size([width, height]).padding(1)(root);
+d3.treemap().size([1200, 700]).padding(1)(root);
 
 svg
   .selectAll("rect")
@@ -66,10 +67,10 @@ svg
   .style("stroke", "black")
   .style("fill", (d) => fillColor(d.data.category))
   .on("mouseover", (d) => {
-    d3.select("#tooltip")
-      .style("opacity", 0.8)
-      .attr("data-value", d.data.value)
-      .text(`Movie: ${d.data.name}, Category: ${d.data.category}, Value: ${d.data.value}`);
+    d3.select("#tooltip").style("opacity", 0.8).attr("data-value", d.data.value);
+    d3.select("#movie").text(d.data.name);
+    d3.select("#category").text(`Category: ${d.data.category}`);
+    d3.select("#gross").text(`Gross: ${d.data.value}`);
   })
   .on("mouseout", () => d3.select("#tooltip").style("opacity", 0))
   .on("mousemove", () =>
@@ -84,14 +85,26 @@ svg
   .data(root.leaves())
   .enter()
   .append("text")
-  .text((d) => d.data.name || "")
-  .attr("x", (d) => d.x0)
-  .attr("y", (d) => d.y0 + 20)
-  .attr("font-size", "12px")
+  .selectAll("tspan")
+  .data((d) =>
+    d.data.name.split(/(?=[A-Z][^A-Z])/g).map((world) => {
+      return {
+        text: world,
+        x0: d.x0,
+        y0: d.y0,
+      };
+    })
+  )
+  .enter()
+  .append("tspan")
+  .text((d) => d.text)
+  .attr("x", (d) => d.x0 + 3)
+  .attr("y", (d, i) => d.y0 + 10 + i * 10)
+  .attr("font-size", "10px")
   .attr("color", "#FFF");
 
 // legend
-const legend = d3.select("#chart").append("svg").attr("id", "legend");
+const legend = d3.select("#chart").append("svg").attr("viewBox", `0 0 1200 100`).attr("id", "legend");
 
 legend
   .selectAll("g.legend")
@@ -99,7 +112,7 @@ legend
   .enter()
   .append("g")
   .attr("transform", function (d, i) {
-    return `translate(${i * 140 + 50}, 0)`;
+    return `translate(${i * 140 + 100}, 0)`;
   })
   .each(function (d) {
     d3.select(this)
